@@ -61,11 +61,7 @@
 	#define SPIFFS_VERSION			SKETCH_VERSION
 #endif // BOARD == WEB_TERMINAL2
 
-typedef struct {
-#ifdef INTERNAL_POWER
-	bool power_time_enable;
-	unsigned int time_off;
-#endif
+typedef struct{
 #ifdef MULTI_POINTS_CONNECT
 	unsigned int timeScan; 		//Время период сканирования в секундах
 	unsigned char deltaRSSI; 	//Дельта мощности сигнала при проверке в процентах
@@ -77,7 +73,16 @@ typedef struct {
 	char mask[16];
 	char wSSID[33];
 	char wKey[33];
-#endif // !MULTI_POINTS_CONNECT		
+#endif // !MULTI_POINTS_CONNECT	
+}net_t;
+
+
+
+typedef struct {	
+#ifdef INTERNAL_POWER
+	bool power_time_enable;
+	unsigned int time_off;
+#endif		
 	char hostName[16];
 	char hostUrl[0xff];
 	int hostPin;
@@ -108,11 +113,12 @@ typedef struct {
 	unsigned char zero_auto;    		// 0~4 дискрет авто обнуление
 	char user[16];
 	char password[16];
-}t_scales_value;
+}scales_value_t;
 
 struct MyEEPROMStruct {
+	net_t net;
 	settings_t settings;
-	t_scales_value scales_value;
+	scales_value_t scales_value;
 };
 
 //#define MAX_CHG 1013//980	//делитель U2=U*(R2/(R1+R2)) 0.25

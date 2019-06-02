@@ -26,7 +26,7 @@ class BrowserServerClass : public AsyncWebServer{
 		void begin();
 		void init();
 		bool checkAdminAuth(AsyncWebServerRequest * request);
-		bool isAuthentified(AsyncWebServerRequest * request);
+		//bool isAuthentified(AsyncWebServerRequest * request);
 		String getName(){ return _httpAuth.wwwUsername;};
 		String getPass(){ return _httpAuth.wwwPassword;};
 		void stop(){_server.end();};
@@ -64,8 +64,8 @@ extern AsyncWebSocket webSocket;
 	void handleScalesPng(AsyncWebServerRequest*);
 #endif
 
-void handleSettings(AsyncWebServerRequest * request);
-void handleFileReadAuth(AsyncWebServerRequest*);
-void handleScaleProp(AsyncWebServerRequest*);
+//void handleSettings(AsyncWebServerRequest * request);
+//void handleFileReadAuth(AsyncWebServerRequest*);
+//void handleScaleProp(AsyncWebServerRequest*);
 void handleRSSI(AsyncWebServerRequest*);
 void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len);

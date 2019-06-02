@@ -2,14 +2,15 @@
 #include "Config.h"
 #include "BrowserServer.h"
 #include "tools.h"
+#include "Board.h"
 
 //BatteryClass* BATTERY;
 
-BatteryClass::BatteryClass(int *min, int *max): Task(20000) {
+BatteryClass::BatteryClass(settings_t * value)	: Task(20000), _value(value) {
 	/* 20 Îáíîâëÿåì çàğÿä áàòàğåè */
 	onRun(std::bind(&BatteryClass::fetchCharge, this));
-	_max = max;
-	_min = min;	
+	_max = &_value->bat_max;
+	_min = &_value->bat_min;	
 	fetchCharge();
 #ifdef DEBUG_BATTERY
 	_isDischarged = false;
@@ -54,3 +55,35 @@ size_t BatteryClass::doData(JsonObject& json) {
 	json["c"] = _charge;
 	return json.measureLength();
 };
+
+void BatteryClass::handleBinfo(AsyncWebServerRequest *request) {
+	if (!request->authenticate(_value->user, _value->password))
+		if (!server.checkAdminAuth(request)) {
+			return request->requestAuthentication();
+		}
+	if (request->args() > 0) {
+		bool flag = false;
+		if (request->hasArg("bmax")) {
+			float t = request->arg("bmax").toFloat();
+			_value->bat_max = CONVERT_V_TO_ADC(t);
+			//CoreMemory.eeprom.settings.bat_max = CONVERT_V_TO_ADC(t);
+			flag = true;
+		}
+		if (flag) {
+			if (request->hasArg("bmin")) {
+				float t = request->arg("bmin").toFloat();
+				_value->bat_min = CONVERT_V_TO_ADC(t);
+				//CoreMemory.eeprom.settings.bat_min = CONVERT_V_TO_ADC(t);
+			}
+			else {
+				flag = false;
+			}				
+		}
+		if (flag && Board->memory()->save()) {
+			goto url;
+		}
+		return request->send(400);
+	}
+url:
+	request->send(SPIFFS, request->url());
+}

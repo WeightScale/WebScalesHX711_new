@@ -164,10 +164,10 @@ public:
 	PowerClass * power() {return _power;};
 	WiFiModuleClass * wifi() {return _wifi;};
 	ScalesClass * scales() {return _scales;};
-	void handleBinfo(AsyncWebServerRequest *request);
+	//void handleBinfo(AsyncWebServerRequest *request);
 	bool saveEvent(const String& event, float value);
 	bool doDefault();
-	size_t doSettings(JsonObject &root);
+	//size_t doSettings(JsonObject &root);
 	void powerOff() {
 		//ws.closeAll();
 		//delay(2000);

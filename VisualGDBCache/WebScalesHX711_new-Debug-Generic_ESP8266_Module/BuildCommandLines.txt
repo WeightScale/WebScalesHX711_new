@@ -2,7 +2,6 @@
 ===info ||| Progress {0} ||| [2.94]
 ===info ||| Progress {0} ||| [5.88]
 ===info ||| Progress {0} ||| [8.82]
-===info ||| Build options changed, rebuilding all ||| []
 ===info ||| Progress {0} ||| [11.76]
 ===info ||| Progress {0} ||| [14.71]
 ===info ||| Progress {0} ||| [17.65]

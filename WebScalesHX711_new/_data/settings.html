@@ -45,10 +45,6 @@
             width: auto;
             box-shadow: 1px 4px 8px 1px #585858;
         }
-        .container {
-            display: table;
-            width: 100%
-        }
         label {
             display: table-cell;
             width: 1px;
@@ -69,35 +65,7 @@
     </style>
     <script>
         var d = document,
-            w = null,
-            ob = [],
-            fd;
-
-        function setOnBlur(ip) {
-            setTimeout(function() {
-                if (d.activeElement === ip) {
-                    ip.onblur = function() {
-                        if (ip.value.length === 0 || !CheckIP(ip)) {
-                            setTimeout(function() {
-                                ip.focus()
-                            }, 0);
-                        } else ip.onblur = null;
-                    }
-                }
-            }, 0)
-        }
-
-        function CheckIP(ip) {
-            ipParts = ip.value.split(".");
-            if (ipParts.length === 4) {
-                for (i = 0; i < 4; i++) {
-                    TheNum = parseInt(ipParts[i]);
-                    if (TheNum >= 0 && TheNum <= 255) {} else break;
-                }
-                if (i === 4) return true;
-            }
-            return false;
-        }
+            w = null;
 
         function GetSettings() {
             var r = new XMLHttpRequest();
@@ -132,56 +100,6 @@
             r.send(null);
         }
 
-        function enableAuthFields(check) {
-            if (check.checked) {
-                d.getElementById('id_table_net').style.display = 'none';
-            } else {
-                d.getElementById('id_table_net').style.display = '';
-            }
-        }
-
-        function formNet(i) {
-            var f = new FormData(d.getElementById(i));
-            var r = new XMLHttpRequest();
-            r.onreadystatechange = function() {
-                if (r.readyState === 4) {
-                    if (r.status === 200) {
-                        var rec = confirm('Перегрузить');
-                        if (rec) {
-                            r.onreadystatechange = null;
-                            r.open('GET', '/rc', true);
-                            r.send(null);
-                        }
-                    } else if (r.status === 400) {
-                        alert('Настройки не изменились');
-                    }
-                }
-            };
-            r.open('POST', '/settings.html', true);
-            r.send(f);
-        }
-
-        function scanWifi() {
-            w.snd('{"cmd":"scan"}'), document.getElementById("ssid").style.display = 'none';
-            var e = document.getElementById("id_lssid");
-            for (e.style.display = "inline"; e.hasChildNodes();) e.removeChild(e.lastChild)
-        }
-
-        function setSSID() {
-            var e = document.getElementById('id_lssid');
-            document.getElementById("ssid").value = e.options[e.selectedIndex].value
-        }
-
-        function listSSID(e) {
-            for (var t = document.getElementById('id_lssid'), n = 0; n < e.list.length; n++) {
-                var a = parseInt(e.list[n].rssi),
-                    o = Math.min(Math.max(2 * (a + 100), 0), 100),
-                    s = document.createElement('option');
-                s.value = e.list[n].ssid, s.innerHTML = e.list[n].ssid + " " + o + '%', t.appendChild(s)
-            }
-            setSSID()
-        }
-
         function SS(h, p, fm, fe) {
             let tw, ws;
             this.snd = function(c) {
@@ -204,7 +122,6 @@
                 ws = new WebSocket(h, p);
                 ws.onopen = function() {
                     d.body.style.visibility = 'visible';
-                    getPoints();
                 };
                 ws.onclose = function() {
                     fe();
@@ -218,51 +135,15 @@
             };
         }
 
-        function getPoints() {
-            w.snd('{"cmd":"gpoint"}');
-        }
-
-        function cL(p, a) {
-            let t = "<th class='th'>ID</th><th class='th'>ИМЯ</th><th class='th'>КЛЮЧ</th>",
-                th = d.createElement('thead');
-            tb = d.createElement('tbody');
-            tr = d.createElement('tr');
-            d.getElementById(p).innerHTML = '';
-            tr.innerHTML = t;
-            th.appendChild(tr);
-            d.getElementById(p).appendChild(th);
-            var id = 0;
-            a.forEach(function(o) {
-                o.id = id++;
-                var row = d.createElement('tr');
-                row.classList.add("tr");
-                row.innerHTML = `<td style='color: white' class='td'>${o.id}<td style='color: white' class='td'>${o.ssid}</td><td width='auto' class='td'>${o.pass}</td>`;
-                row.addEventListener("click", function() {
-                    showD(this);
-                });
-                tb.appendChild(row);
-            });
-            d.getElementById(p).appendChild(tb);
-            var table = d.getElementById(p);
-            resizableGrid(table);
-        }
-
         function parseCommand(e) {
             if (e.hasOwnProperty('cmd')) {
                 switch (e.cmd) {
-                    case 'gpoint':
-                        ob = e.points;
-                        cL('tw_id', ob);
-                        break;
                     case 'cls':
                         if (e.code === 1111) {
                             alert('Лимит клиентов');
                             d.body.style.visibility = 'hidden';
                         }
                         w.close();
-                        break;
-                    case 'ssl':
-                        listSSID(e);
                         break;
                 }
             }
@@ -273,154 +154,19 @@
             });
             w.oS();
             GetSettings();
-            fd = favDialog;
         };
 
-        function resizableGrid(e) {
-            var t = e.getElementsByTagName("tr")[0],
-                n = t ? t.children : void 0;
-            if (n) {
-                e.style.overflow = "hidden";
-                for (var i = e.offsetHeight, o = 0; o < n.length; o++) {
-                    var r = s(i);
-                    n[o].appendChild(r), n[o].style.position = 'relative', d(r)
-                }
-            }
-
-            function d(e) {
-                var t, n, i, o, r;
-                e.addEventListener('mousedown', function(e) {
-                    n = e.target.parentElement, i = n.nextElementSibling, t = e.pageX;
-                    var d = function(e) {
-                        if ('border-box' === l(e, 'box-sizing')) return 0;
-                        var t = l(e, 'padding-left'),
-                            n = l(e, 'padding-right');
-                        return parseInt(t) + parseInt(n)
-                    }(n);
-                    o = n.offsetWidth - d, i && (r = i.offsetWidth - d)
-                }), e.addEventListener('mouseover', function(e) {
-                    e.target.style.borderRight = '2px solid #0000ff'
-                }), e.addEventListener('mouseout', function(e) {
-                    e.target.style.borderRight = ''
-                }), document.addEventListener('mousemove', function(e) {
-                    if (n) {
-                        var d = e.pageX - t;
-                        i && (i.style.width = r - d + 'px'), n.style.width = o + d + 'px'
-                    }
-                }), document.addEventListener("mouseup", function(e) {
-                    n = void 0, i = void 0, t = void 0, r = void 0, o = void 0
-                })
-            }
-
-            function s(e) {
-                var t = document.createElement('div');
-                return t.style.top = 0, t.style.right = 0, t.style.width = '5px', t.style.position = 'absolute', t.style.cursor = 'col-resize', t.style.userSelect = 'none', t.style.height = e + 'px', t
-            }
-
-            function l(e, t) {
-                return window.getComputedStyle(e, null).getPropertyValue(t)
-            }
-        }
-
-        function closeD() {
-            favDialog.close();
-        }
-
-        function removeD(f) {
-            var f = new FormData(f);
-            f.append('delete', true);
-            var r = new XMLHttpRequest();
-            r.onreadystatechange = function() {
-                if (r.readyState === 4) {
-                    if (r.status === 200) {
-                        alert('Удалили!');
-                        var u = r.responseURL;
-                        window.open(u, '_self');
-                    } else if (r.status === 400) {
-                        alert('Настройки не изменились');
-                    }
-                }
-            };
-            r.open('POST', '/settings.html', true);
-            w.close();
-            r.send(f);
-        }
-
-        function submitD() {
-            var f = d.getElementById('form_d');
-            var e = f.elements;
-            var id = parseInt(e.id.value);
-            if (ob[id].ssid !== e.ssid.value || ob[id].pass !== e.pass.value || ob[id].dnip !== e.dnip.value || ob[id].ip !== e.ip.value || ob[id].gate !== e.gate.value || ob[id].mask !== e.mask.value) {
-                d.getElementById('submit').type = 'submit';
-                w.close();
-                f.submit();
-            }
-        }
-
-        function showD(e) {
-            var id = parseInt(e.childNodes[0].innerHTML);
-            fd.querySelector('#submit').onclick = submitD;
-            for (v in ob[id]) {
-                var i = "#" + v;
-                try {
-                    if (fd.querySelector(i).type === 'checkbox') {
-                        fd.querySelector(i).checked = ob[id][v];
-                    } else fd.querySelector(i).value = ob[id][v];
-                } catch (e) {}
-            }
-            enableAuthFields(d.getElementById('dnip'));
-            fd.showModal();
-        }
-
-        function addNet() {
-            fd.querySelector('#submit').type = 'submit';
-            fd.querySelector("#ssid").value = '';
-            fd.querySelector("#pass").value = '';
-            fd.querySelector("#dnip").checked = true;
-            enableAuthFields(d.getElementById('dnip'));
-            fd.showModal();
-        }
     </script>
 </head>
 
-<body style='visibility: hidden'>
-<dialog id='favDialog'>
-    <form id='form_d' method='post'>
-        <section>
-            <input id='id' type='number' name='id' style='display: none'>
-            <p> <span> <label for='ssid'>сеть:</label> <input id='ssid' type='text' name='ssid' placeholder='имя сети'> <select style='display:none;' id='id_lssid' onchange='setSSID();'></select> </span> </p>
-            <p>
-                <label for='pass'>ключ:</label>
-                <input id='pass' type='password' name='key' placeholder='пароль'> </p>
-            <p class="container">
-                <label for='dnip'>Динамический IP:</label>
-                <input type='checkbox' id='dnip' name='dnip' onclick='enableAuthFields(this);' /> </p>
-            <div id='id_table_net'>
-                <p>
-                    <label for='ip'>IP:</label>
-                    <input id='ip' type='text' name='lan_ip' onfocus='setOnBlur(this)' /> </p>
-                <p>
-                    <label for='gate'>ШЛЮЗ:</label>
-                    <input id='gate' type='text' name='gateway' onfocus='setOnBlur(this)' /> </p>
-                <p>
-                    <label for='mask'>МАСКА:</label>
-                    <input id='mask' type='text' name='subnet' onfocus='setOnBlur(this)' /> </p>
-            </div>
-        </section>
-        <hr color="#abc0df" size="4px">
-        <menu>
-            <button id='remove' type='button' onclick='removeD(this.form)'>Удалить</button>
-            <button id='closed' type='button' onclick='closeD()'>Закрыть</button>
-            <button id='scan' type='button' onclick='scanWifi()'>Поиск</button>
-            <button id='submit' type='button'>Сохранить</button>
-        </menu>
-    </form>
-</dialog>
+<!--<body style='visibility: hidden'>-->
+<body >
 <a href='/'><img src='und.png' alt="&lt;" class='btn btn--s btn--blue'></a>&nbsp;&nbsp;<strong>НАСТРОЙКИ</strong>
+<br/>
 <fieldset>
-    <details>
-        <summary>КОНФИГУРАЦИЯ СЕТИ</summary>
-        <h3> <br><table id='tw_id' ></table> <br><input style='width: auto' type='button' value='ДОБАВИТЬ' onclick='addNet()'/> </h3> </details>
+    <h3>
+        <a href='/net.html'>Настройки сети</a>
+    </h3>
 </fieldset>
 <br/>
 <fieldset style='width: auto'>
@@ -429,22 +175,43 @@
         <h3> <form id='form_assid_id' method='post'>
             <label for='id_host'>Имя хост:</label>
             <input id='id_host' type='text' name='host'/>
+            <h5>Доступ к настройкам</h5>
+            <label for='id_nadmin'>ЛОГИН:</label>
+            <input id='id_nadmin' name='nadmin' placeholder='логин админ'/>
+            <label for='id_padmin'>ПАРОЛЬ:</label>
+            <input type='password' id='id_padmin' name='padmin' placeholder='пароль админ'/>
             <hr>
-            <div class="container">
-                <label for="id_escan">Сканировать сеть:</label>
-                <span><input name="escan" id="id_escan" type="checkbox" /></span>
-            </div>
-            <hr>
-            <label for='id_t_scan'>Период сканирования секунд:</label>
-            <input id='id_t_scan' min="10" max="60" type='number' name='t_scan'/>
-            <label for='id_d_rssi'>Дельта сигнала %:</label> <input id='id_d_rssi' min="5" max="50" type='number' name='d_rssi'/> <h5>Доступ к настройкам</h5> <label for='id_nadmin'>ЛОГИН:</label> <input id='id_nadmin' name='nadmin' placeholder='логин админ'/> <label for='id_padmin'>ПАРОЛЬ:</label> <input type='password' id='id_padmin' name='padmin' placeholder='пароль админ'/> <hr> <input type='submit' value='СОХРАНИТЬ'/></form> </h3>
+            <input type='submit' value='СОХРАНИТЬ'/></form> </h3>
         <hr> </details>
 </fieldset>
 <br/>
 <fieldset>
     <details>
         <summary>ИНФОРМАЦИЯ</summary>
-        <br><span style='font-size: small; font-weight: bold; color: #626262'> <h3> <table> <tr> <td>СЕТЬ:</td><td align='right' id='id_net'></td></tr><tr> <td>iP:</td><td align='right' id='id_sta_ip'></td></tr><tr> <td>RSSI:</td><td align='right' id='id_rssi'></td></tr><tr> <td>ВЕРСИЯ:</td><td align='right'><div id='id_vr'></div></td></tr></table> </h3> <hr> </span>
+        <br>
+        <span style='font-size: small; font-weight: bold; color: #626262'>
+            <h3>
+            <table>
+                <tr>
+                    <td>СЕТЬ:</td>
+                    <td align='right' id='id_net'></td>
+                </tr>
+                <tr>
+                    <td>iP:</td>
+                    <td align='right' id='id_sta_ip'></td>
+                </tr>
+                <tr>
+                    <td>RSSI:</td>
+                    <td align='right' id='id_rssi'></td>
+                </tr>
+                <tr>
+                    <td>ВЕРСИЯ:</td>
+                    <td align='right'><div id='id_vr'></div></td>
+                </tr>
+            </table>
+            </h3>
+            <hr>
+        </span>
         <table style="width: auto">
             <tr>
                 <td>

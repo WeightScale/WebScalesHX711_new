@@ -12,7 +12,7 @@ IPAddress netMsk(255, 255, 255, 0);
 WiFiModuleClass::WiFiModuleClass(MyEEPROMStruct * value)
 	: _value(value),
 #ifdef MULTI_POINTS_CONNECT
-	Task(value->settings.timeScan * 1000) {
+	Task(value->net.timeScan * 1000) {
 #else
 	Task(20000) {
 #endif // MULTI_POINTS_CONNECT
@@ -24,7 +24,7 @@ WiFiModuleClass::WiFiModuleClass(MyEEPROMStruct * value)
 	WiFi.mode(WIFI_AP_STA);		
 #ifdef MULTI_POINTS_CONNECT
 	onRun(std::bind(&WiFiModuleClass::scan, this));
-	if (!_value->settings.enable_scan){
+	if (!_value->net.enable_scan){
 		pause();
 		_Scan = false;			
 	}
@@ -153,7 +153,7 @@ WiFiModuleClass::WiFiModuleClass(MyEEPROMStruct * value)
 						goto resume;
 					}
 					else {
-						if (currRSSI > (bestRSSI - _value->settings.deltaRSSI)) {				
+						if (currRSSI > (bestRSSI - _value->net.deltaRSSI)) {				
 							goto resume;
 						}
 					}

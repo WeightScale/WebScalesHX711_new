@@ -1,6 +1,5 @@
-#include "BrowserServer.h"
+п»ї#include "BrowserServer.h"
 #include <ESPAsyncWebServer.h>
-//#include "Core.h"
 #include <SPIFFSEditor.h>
 #include "HttpUpdater.h"
 #include <functional>
@@ -11,18 +10,14 @@
 #include "DateTime.h"
 #include "tools.h"
 #include "MultiPointsPage.h"
+#include "SettingsPage.h"
 #include "CalibratePage.h"
 
-/* Soft AP network parameters */
-//IPAddress apIP(192,168,4,1);
-//IPAddress netMsk(255, 255, 255, 0);
-
-IPAddress lanIp;			// Надо сделать настройки ip адреса
+IPAddress lanIp;			// РќР°РґРѕ СЃРґРµР»Р°С‚СЊ РЅР°СЃС‚СЂРѕР№РєРё ip Р°РґСЂРµСЃР°
 IPAddress gateway;
 
 BrowserServerClass server(80,"sa","343434");
 AsyncWebSocket webSocket("/ws");
-//AsyncEventSource events("/events");
 AsyncDNSServer dnsServer;
 
 BrowserServerClass::BrowserServerClass(uint16_t port, char * username, char * password)	: AsyncWebServer(port) {
@@ -38,13 +33,11 @@ void BrowserServerClass::begin(){
 	dnsServer.setErrorReplyCode(AsyncDNSReplyCode::ServerFailure);
 	webSocket.onEvent(onWsEvent);
 	addHandler(&webSocket);
-	//addHandler(&events);
-	//CORE = new CoreClass(_httpAuth.wwwUsername.c_str(), _httpAuth.wwwPassword.c_str());	
-	//addHandler(CORE);
 	addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
 	addHandler(new SPIFFSEditor(_httpAuth.wwwUsername.c_str(), _httpAuth.wwwPassword.c_str()));	
 	//addHandler(new HttpUpdaterClass("sa", "654321"));
 	addHandler(CalibratePage);
+	addHandler(SettingsPage);
 #ifdef MULTI_POINTS_CONNECT
 	addHandler(MultiPointsPage);
 #endif // MULTI_POINTS_CONNECT
@@ -54,7 +47,8 @@ void BrowserServerClass::begin(){
 }
 
 void BrowserServerClass::init(){
-	on("/settings.json", HTTP_ANY, std::bind(&MultiPointsPageClass::handleValue, MultiPointsPage, std::placeholders::_1));
+	on("/settings.json", HTTP_ANY, std::bind(&SettingsPageClass::handleValue, SettingsPage, std::placeholders::_1));
+	on("/net.json", HTTP_ANY, std::bind(&MultiPointsPageClass::handleValue, MultiPointsPage, std::placeholders::_1));
 	on("/cdate.json", HTTP_ANY, std::bind(&CalibratePageClass::handleValue, CalibratePage, std::placeholders::_1));
 	on("/rc",[](AsyncWebServerRequest *request) {
 		AsyncWebServerResponse *response = request->beginResponse_P(200, F("text/html"), "<meta http-equiv='refresh' content='10;URL=/'>RECONNECT...");
@@ -64,8 +58,7 @@ void BrowserServerClass::init(){
 			ESP.reset();
 		});
 		request->send(response);
-	});									/* Пересоединиться по WiFi. */
-	//on("/sv", handleScaleProp);									/* Получить значения. */	
+	});									/* РџРµСЂРµСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ РїРѕ WiFi. */		
 	on("/heap", HTTP_GET, [](AsyncWebServerRequest *request){
 		String str = String("Heap: ");
 		str += String(ESP.getFreeHeap());
@@ -74,19 +67,19 @@ void BrowserServerClass::init(){
 		request->send(200, F("text/plain"), str);
 	});
 	on("/rst",HTTP_ANY,[this](AsyncWebServerRequest * request){
-		if (!isAuthentified(request)){
+		if (!checkAdminAuth(request)) {
 			return request->requestAuthentication();
 		}
 		if(Board->doDefault())
-			request->send(200,F("text/html"), F("Установлено!"));
+			request->send(200,F("text/html"), F("РЈСЃС‚Р°РЅРѕРІР»РµРЅРѕ!"));
 		else
 			request->send(400);
 	});
-	//on("/rssi", handleRSSI);
-	//on("/binfo.html", std::bind(&BoardClass::handleBinfo, Board, std::placeholders::_1));
+	on("/rssi", handleRSSI);
+	on("/binfo.html", std::bind(&BatteryClass::handleBinfo, Board->battery(), std::placeholders::_1));
 #ifdef HTML_PROGMEM
-	on("/",[](AsyncWebServerRequest * reguest){	reguest->send_P(200,F("text/html"),index_html);});								/* Главная страница. */	 
-	on("/global.css",[](AsyncWebServerRequest * reguest){	reguest->send_P(200,F("text/css"),global_css);});					/* Стили */
+	on("/",[](AsyncWebServerRequest * reguest){	reguest->send_P(200,F("text/html"),index_html);});								/* Р“Р»Р°РІРЅР°СЏ СЃС‚СЂР°РЅРёС†Р°. */	 
+	on("/global.css",[](AsyncWebServerRequest * reguest){	reguest->send_P(200,F("text/css"),global_css);});					/* РЎС‚РёР»Рё */
 	/*on("/favicon.png",[](AsyncWebServerRequest * request){
 		AsyncWebServerResponse *response = request->beginResponse_P(200, "image/png", favicon_png, favicon_png_len);
 		request->send(response);
@@ -129,27 +122,27 @@ void BrowserServerClass::init(){
 	});
 }
 
-bool BrowserServerClass::checkAdminAuth(AsyncWebServerRequest * r) {	
-	return r->authenticate(_httpAuth.wwwUsername.c_str(), _httpAuth.wwwPassword.c_str());
+bool BrowserServerClass::checkAdminAuth(AsyncWebServerRequest * request) {	
+	return request->authenticate(_httpAuth.wwwUsername.c_str(), _httpAuth.wwwPassword.c_str());
 }
 
-bool BrowserServerClass::isAuthentified(AsyncWebServerRequest * request){
-	/*if (!request->authenticate(CORE->getNameAdmin(), CORE->getPassAdmin())){
+/*bool BrowserServerClass::isAuthentified(AsyncWebServerRequest * request){
+	if (!request->authenticate(CORE->getNameAdmin(), CORE->getPassAdmin())){
 		if (!checkAdminAuth(request)){
 			return false;
 		}
-	}*/
+	}
 	return true;
-}
+}*/
 
-void handleSettings(AsyncWebServerRequest * request){
+/*void handleSettings(AsyncWebServerRequest * request){
 	if (!server.isAuthentified(request))
 		return request->requestAuthentication();
 	AsyncResponseStream *response = request->beginResponseStream("application/json");
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject &root = jsonBuffer.createObject();
 	Board->doSettings(root);
-	/*JsonObject& scale = root.createNestedObject(SCALE_JSON);
+	/ *JsonObject& scale = root.createNestedObject(SCALE_JSON);
 	scale["id_auto"] = CoreMemory.eeprom.settings.autoIp;
 	scale["id_pe"] = CoreMemory.eeprom.settings.power_time_enable;
 	scale["id_pt"] = CoreMemory.eeprom.settings.time_off;
@@ -164,13 +157,13 @@ void handleSettings(AsyncWebServerRequest * request){
 	
 	JsonObject& server = root.createNestedObject(SERVER_JSON);
 	server["id_host"] = String(CoreMemory.eeprom.settings.hostUrl);
-	server["id_pin"] = CoreMemory.eeprom.settings.hostPin;*/
+	server["id_pin"] = CoreMemory.eeprom.settings.hostPin;* /
 	
 	root.printTo(*response);
 	request->send(response);
-}
+}*/
 
-void handleFileReadAuth(AsyncWebServerRequest * request){
+/*void handleFileReadAuth(AsyncWebServerRequest * request){
 	if (!server.isAuthentified(request)){
 		return request->requestAuthentication();
 	}
@@ -193,7 +186,7 @@ void handleScaleProp(AsyncWebServerRequest * request){
 	root["id_vr"] = SKETCH_VERSION;
 	response->setLength();
 	request->send(response);
-}
+}*/
 
 #ifdef HTML_PROGMEM
 	void handleBatteryPng(AsyncWebServerRequest * request){
@@ -264,7 +257,7 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
 		if (!root.success()) {
 			return;
 		}
-		const char *command = root["cmd"];			/* Получить показания датчика*/
+		const char *command = root["cmd"];			/* РџРѕР»СѓС‡РёС‚СЊ РїРѕРєР°Р·Р°РЅРёСЏ РґР°С‚С‡РёРєР°*/
 		JsonObject& json = jsonBuffer.createObject();
 		json["cmd"] = command;
 #ifdef MULTI_POINTS_CONNECT

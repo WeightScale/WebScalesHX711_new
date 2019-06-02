@@ -4,7 +4,7 @@
 
 CalibratePageClass * CalibratePage;
 
-CalibratePageClass::CalibratePageClass(t_scales_value * value)	: _value(value) {};
+CalibratePageClass::CalibratePageClass(scales_value_t * value)	: _value(value) {};
 
 bool CalibratePageClass::canHandle(AsyncWebServerRequest *request) {	
 	if (request->url().equalsIgnoreCase(F("/calibr.html"))) {

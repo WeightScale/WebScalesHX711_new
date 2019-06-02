@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
 #include "Config.h"
 
 #ifdef HTML_PROGMEM
@@ -14,13 +15,16 @@ const char soft_html[] PROGMEM = R"(<!DOCTYPE html><html lang='en'><head> <meta 
 
 class MultiPointsPageClass : public AsyncWebHandler {
 private:
-	settings_t * _value;
+	net_t * _value;
+	char * _user;
+	char * _password;
 public:
-	MultiPointsPageClass(settings_t * value) : _value(value) {};
+	MultiPointsPageClass(net_t * value, char * user, char * pass) : _value(value),_user(user),_password(pass) {};
 	virtual bool canHandle(AsyncWebServerRequest *request) override final;
 	virtual void handleRequest(AsyncWebServerRequest *request) override final;
 	virtual bool isRequestHandlerTrivial() override final {return false;};	
 	void handleValue(AsyncWebServerRequest * request);
+	size_t doSettings(JsonObject &root);
 };
 
 extern MultiPointsPageClass * MultiPointsPage;

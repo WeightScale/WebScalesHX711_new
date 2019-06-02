@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "MultiPointsPage.h"
 #include "CalibratePage.h"
+#include "SettingsPage.h"
 
 BoardClass * Board;
 
@@ -14,12 +15,13 @@ BoardClass::BoardClass() {
 	if (!_memory->init()) {
 		doDefault();
 	}
-	_battery = new BatteryClass(&_eeprom.settings.bat_min, &_eeprom.settings.bat_max);	
+	_battery = new BatteryClass(&_eeprom.settings);	
 	_wifi = new WiFiModuleClass(&_eeprom);
 	_scales = new ScalesClass(DOUT_PIN, SCK_PIN, &_eeprom.scales_value);
 	CalibratePage = new CalibratePageClass(&_eeprom.scales_value);
+	SettingsPage = new SettingsPageClass(&_eeprom.settings);
 #ifdef MULTI_POINTS_CONNECT
-	MultiPointsPage = new MultiPointsPageClass(&_eeprom.settings);	
+	MultiPointsPage = new MultiPointsPageClass(&_eeprom.net,_eeprom.settings.user,_eeprom.settings.password);	
 	_wifi->loadPoints();
 #endif // MULTI_POINTS_CONNECT
 	STAGotIP = WiFi.onStationModeGotIP(std::bind(&BoardClass::onSTAGotIP, this, std::placeholders::_1));	
@@ -52,38 +54,6 @@ void BoardClass::onStationDisconnected(const WiFiEventStationModeDisconnected& e
 	offSTA();
 	NBNS.end();	
 };
-
-void BoardClass::handleBinfo(AsyncWebServerRequest *request) {
-	if (!request->authenticate(_eeprom.scales_value.user, _eeprom.scales_value.password))
-		if (!server.checkAdminAuth(request)) {
-			return request->requestAuthentication();
-		}
-	if (request->args() > 0) {
-		bool flag = false;
-		if (request->hasArg("bmax")) {
-			float t = request->arg("bmax").toFloat();
-			_eeprom.settings.bat_max = CONVERT_V_TO_ADC(t);
-			//CoreMemory.eeprom.settings.bat_max = CONVERT_V_TO_ADC(t);
-			flag = true;
-		}
-		if (flag) {
-			if (request->hasArg("bmin")) {
-				float t = request->arg("bmin").toFloat();
-				_eeprom.settings.bat_min = CONVERT_V_TO_ADC(t);
-				//CoreMemory.eeprom.settings.bat_min = CONVERT_V_TO_ADC(t);
-			}
-			else {
-				flag = false;
-			}				
-		}
-		if (flag && _memory->save()) {
-			goto url;
-		}
-		return request->send(400);
-	}
-url:
-	request->send(SPIFFS, request->url());
-}
 
 bool BoardClass::saveEvent(const String& event, float value) {
 	//String date = getDateTime();
@@ -119,8 +89,9 @@ bool BoardClass::doDefault() {
 #ifndef MULTI_POINTS_CONNECT
 	_eeprom.settings.dnip = true;
 #else
-	_eeprom.settings.timeScan = 20;
-	_eeprom.settings.deltaRSSI = 20;
+	_eeprom.net.timeScan = 20;
+	_eeprom.net.deltaRSSI = 20;
+	_eeprom.net.enable_scan = true;
 #endif // MULTI_POINTS_CONNECT
 	_eeprom.scales_value.accuracy = 1;
 	_eeprom.scales_value.average = 1;
@@ -134,7 +105,7 @@ bool BoardClass::doDefault() {
 	return _memory->save();
 }
 
-size_t BoardClass::doSettings(JsonObject &root) {
+/*size_t BoardClass::doSettings(JsonObject &root) {
 	JsonObject& scale = root.createNestedObject(SCALE_JSON);
 #ifndef MULTI_POINTS_CONNECT
 	scale["id_auto"] = _eeprom.settings.dnip;
@@ -144,9 +115,9 @@ size_t BoardClass::doSettings(JsonObject &root) {
 	scale["id_ssid"] = String(_eeprom.settings.wSSID);
 	scale["id_key"] = String(_eeprom.settings.wKey);
 #else	
-	root["id_t_scan"] = _eeprom.settings.timeScan;
-	root["id_d_rssi"] = _eeprom.settings.deltaRSSI;
-	root["id_escan"] = _eeprom.settings.enable_scan;
+	root["id_t_scan"] = _eeprom.net.timeScan;
+	root["id_d_rssi"] = _eeprom.net.deltaRSSI;
+	root["id_escan"] = _eeprom.net.enable_scan;
 #endif
 #ifdef INTERNAL_POWER
 	scale["id_pe"] = _eeprom.settings.power_time_enable;
@@ -167,4 +138,4 @@ size_t BoardClass::doSettings(JsonObject &root) {
 	info["id_rssi"] = String(min(max(2 * (WiFi.RSSI() + 100), 0), 100)) + "%"; 
 	info["id_vr"] = SKETCH_VERSION;
 	return root.measureLength();
-};
+};*/

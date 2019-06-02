@@ -20,7 +20,7 @@ typedef struct {
 
 class ScalesClass : public HX711, public Task {
 private:
-	t_scales_value * _value;
+	scales_value_t * _value;
 	float _weight;
 	float _round; /* множитиль для округления */
 	float _stable_step; /* шаг для стабилизации */
@@ -31,7 +31,7 @@ private:
 	float _tape;	/* Значение тары */
 
 public:
-	ScalesClass(byte, byte, t_scales_value * value);
+	ScalesClass(byte, byte, scales_value_t * value);
 	~ScalesClass() {};	
 	void begin();
 	void takeWeight();

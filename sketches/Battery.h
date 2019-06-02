@@ -2,6 +2,7 @@
 #include "Task.h"
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
+#include "Config.h"
 
 #define DEBUG_BATTERY		/*Для теста*/
 
@@ -15,12 +16,13 @@ class BatteryClass : public Task {
 protected:
 	bool _isDischarged = false;
 	int _charge;
+	settings_t * _value;
 	int * _max;	/*Значение ацп максимального заряд*/
 	int * _min;	/*Значение ацп минимального заряд*/
 	int _get_adc(byte times = 1);	
 public:
 	//BatteryClass();
-	BatteryClass(int * min, int * max);
+	BatteryClass(settings_t * value);
 	~BatteryClass() {};
 	int fetchCharge();		
 	void charge(unsigned int ch){_charge = ch; };
@@ -31,7 +33,7 @@ public:
 	int *min(){return _min;};
 	size_t doInfo(JsonObject& json);
 	size_t doData(JsonObject& json);
-	//void handleBinfo(AsyncWebServerRequest *request);
+	void handleBinfo(AsyncWebServerRequest *request);
 	bool isDischarged(){return _isDischarged;};
 };
 

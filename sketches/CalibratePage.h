@@ -22,9 +22,9 @@ const char calibr_html[] PROGMEM = R"(<!DOCTYPE html><html lang='en'><head> <met
 
 class CalibratePageClass : public AsyncWebHandler {
 private:
-	t_scales_value * _value;
+	scales_value_t * _value;
 public:
-	CalibratePageClass(t_scales_value * value);
+	CalibratePageClass(scales_value_t * value);
 	virtual bool canHandle(AsyncWebServerRequest *request) override final;
 	virtual void handleRequest(AsyncWebServerRequest *request) override final;
 	virtual bool isRequestHandlerTrivial() override final {return false;}

@@ -35,6 +35,7 @@
         <string>sketches\HX711.h</string>
         <string>sketches\Scales.h</string>
         <string>sketches\CalibratePage.h</string>
+        <string>sketches\SettingsPage.h</string>
       </OtherFiles>
     </ProjectModeSettings>
   </Project>
