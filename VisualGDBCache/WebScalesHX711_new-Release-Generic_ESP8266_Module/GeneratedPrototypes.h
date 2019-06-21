@@ -4,7 +4,5 @@
 
 #define SYSPROGS_ARDUINO_EXPAND_GENERATED_PROTOTYPES \
 	void setup(); \
-	void connectWifi(); \
 	void loop(); \
-	void onStationModeConnected(const WiFiEventStationModeConnected& evt); \
 

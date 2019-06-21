@@ -17,6 +17,9 @@ void ScalesClass::begin() {
 	pinMode(RATE, OUTPUT);	
 	digitalWrite(RATE, _value->rate);
 #endif
+#if BOARD == WEB_TERMINAL2
+	digitalWrite(EN_MT, _value->power5v);
+#endif
 	//_downloadValue();
 	mathRound();
 #if !defined(DEBUG_WEIGHT_RANDOM)  && !defined(DEBUG_WEIGHT_MILLIS)
@@ -167,4 +170,14 @@ size_t ScalesClass::doData(JsonObject& json) {
 	json["a"] = _value->accuracy;
 	json["s"] = _saveWeight.stabNum;
 	return json.measureLength();	
+}
+
+void ScalesClass::handleSeal(AsyncWebServerRequest * request) {
+	randomSeed(readAverage());
+	seal(random(1000));
+	
+	if (Board->memory()->save()) {
+		return request->send(200, F("text/html"), String(seal()));
+	}
+	return request->send(400, F("text/html"), F("Ошибка!"));
 }

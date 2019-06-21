@@ -3,8 +3,8 @@
 
 //using namespace std;
 
-#define GPIO14			14							/* сигнал clock HX711 */
-#define GPIO16			16							/* сигнал дата HX711 */
+#define GPIO14			16							/* сигнал clock HX711 */
+#define GPIO16			14							/* сигнал дата HX711 */
 #define EN_NCP			12							/* сигнал включения питания  */
 #define PWR_SW			13							/* сигнал от кнопки питания */
 #define EN_MT			15							/* сигнал включения питание датчика*/
@@ -13,8 +13,8 @@
 #define SDA_RTC			4							/* сигнал дата часов */
 #define V_BAT			A0							/* ацп для батареи */
 
-#define R1_KOM					300.0f
-#define R2_KOM					100.0f
+#define R1_KOM					470.0f
+#define R2_KOM					75.0f
 #define VREF					1.0f
 #define ADC						1023.0f
 

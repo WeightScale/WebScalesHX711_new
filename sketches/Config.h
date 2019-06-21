@@ -6,19 +6,19 @@
 #define WEB_CRANE				3
 #define SCALE_SERVER			4
 
-//#define BOARD WEB_TERMINAL2
-#define BOARD WEB_TERMINAL_MINI
+#define BOARD WEB_TERMINAL2
+//#define BOARD WEB_TERMINAL_MINI
 //#define BOARD WEB_CRANE
 //#define BOARD SCALE_SERVER
 
-#define BATTERY_6V				6
-#define BATTERY_4V				4
+//#define BATTERY_6V				6
+//#define BATTERY_4V				4
 
 //#define EXTERNAL_POWER 1
 //#define INTERNAL_POWER 2
 
 //#define POWER_DEBUG
-//#define HTML_PROGMEM			//Использовать веб страницы из flash памяти
+#define HTML_PROGMEM			//Использовать веб страницы из flash памяти
 #define MULTI_POINTS_CONNECT	/* Использовать для использования с несколькими точками доступа */
 
 #ifdef HTML_PROGMEM
@@ -44,7 +44,7 @@
 #elif BOARD == WEB_TERMINAL_MINI
 	#include "web_terminal_mini.h"
 	#define EXTERNAL_POWER
-	#define PLAN_BATTERY			BATTERY_6V	
+	//#define PLAN_BATTERY			BATTERY_6V	
 	#define SKETCH_VERSION			"web_terminal_mini.001"
 	#define SPIFFS_VERSION			SKETCH_VERSION
 #elif BOARD == WEB_CRANE
@@ -88,18 +88,18 @@ typedef struct {
 	int hostPin;
 	char user[16];
 	char password[16];
-	int bat_max;
-	int bat_min;
+	unsigned int bat_max;
+	unsigned int bat_min;
 } settings_t;
 
 typedef struct {
 #if BOARD == WEB_TERMINAL_MINI
 	bool rate;
 #endif
-	bool enable_zero_auto;
-#ifdef INTERNAL_POWER
+#if BOARD == WEB_TERMINAL2
 	bool power5v;
-#endif
+#endif	
+	bool enable_zero_auto;
 	long offset; /*  */
 	unsigned char average; /*  */
 	unsigned char step; /*  */

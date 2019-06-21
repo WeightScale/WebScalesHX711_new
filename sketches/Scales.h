@@ -5,7 +5,7 @@
 #include <ArduinoJson.h>
 #include "Task.h"
 
-#define DEBUG_WEIGHT_RANDOM
+//#define DEBUG_WEIGHT_RANDOM
 //#define DEBUG_WEIGHT_MILLIS
 
 #define DOUT_PIN		GPIO14							/* сигнал дата АЦП */
@@ -70,9 +70,9 @@ public:
 	char *user(){return _value->user;};
 	char *password(){return _value->password;};
 	int accuracy(){return _value->accuracy;};
+	void handleSeal(AsyncWebServerRequest*);
 };
 
 //extern ScalesClass Scale;
 //extern Task *taskWeight;
 //extern void takeWeight();
-void handleSeal(AsyncWebServerRequest*);

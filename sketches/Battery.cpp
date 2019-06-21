@@ -17,7 +17,7 @@ BatteryClass::BatteryClass(settings_t * value)	: Task(20000), _value(value) {
 #endif // DEBUG_BATTERY
 }
 
-int BatteryClass::fetchCharge() {
+unsigned int BatteryClass::fetchCharge() {
 	_charge = _get_adc(1);
 	//_charge = Constrain(_charge, this->_min, this->_max);
 	_charge = constrain(_charge, *_min, *_max);
@@ -30,8 +30,8 @@ int BatteryClass::fetchCharge() {
 	return _charge;
 }
 
-int BatteryClass::_get_adc(byte times) {
-	long sum = 0;
+unsigned int BatteryClass::_get_adc(byte times) {
+	unsigned long sum = 0;
 #ifdef DEBUG_BATTERY
 	for (byte i = 0; i < times; i++) {
 		sum += random(ADC);

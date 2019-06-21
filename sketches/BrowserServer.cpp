@@ -35,7 +35,7 @@ void BrowserServerClass::begin(){
 	addHandler(&webSocket);
 	addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);
 	addHandler(new SPIFFSEditor(_httpAuth.wwwUsername.c_str(), _httpAuth.wwwPassword.c_str()));	
-	//addHandler(new HttpUpdaterClass("sa", "654321"));
+	addHandler(new HttpUpdaterClass("sa", "654321"));
 	addHandler(CalibratePage);
 	addHandler(SettingsPage);
 #ifdef MULTI_POINTS_CONNECT
@@ -50,6 +50,7 @@ void BrowserServerClass::init(){
 	on("/settings.json", HTTP_ANY, std::bind(&SettingsPageClass::handleValue, SettingsPage, std::placeholders::_1));
 	on("/net.json", HTTP_ANY, std::bind(&MultiPointsPageClass::handleValue, MultiPointsPage, std::placeholders::_1));
 	on("/cdate.json", HTTP_ANY, std::bind(&CalibratePageClass::handleValue, CalibratePage, std::placeholders::_1));
+	on("/sl", std::bind(&ScalesClass::handleSeal, Board->scales(), std::placeholders::_1));	
 	on("/rc",[](AsyncWebServerRequest *request) {
 		AsyncWebServerResponse *response = request->beginResponse_P(200, F("text/html"), "<meta http-equiv='refresh' content='10;URL=/'>RECONNECT...");
 		response->addHeader(F("Connection"), F("close"));
@@ -64,6 +65,8 @@ void BrowserServerClass::init(){
 		str += String(ESP.getFreeHeap());
 		str += " client: ";
 		str += String(webSocket.count());
+		//str += " batADC: ";
+		//str += String(Board->battery()->_get_adc(1));
 		request->send(200, F("text/plain"), str);
 	});
 	on("/rst",HTTP_ANY,[this](AsyncWebServerRequest * request){
@@ -103,7 +106,7 @@ void BrowserServerClass::init(){
 	rewrite("/sn", "/settings.html");
 	serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");	
 #endif
-	if (Board->battery()->isDischarged()){
+	/**/if (Board->battery()->isDischarged()){
 		on("/ds",
 			[](AsyncWebServerRequest *request) {
 				AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/balert.html");
@@ -284,7 +287,8 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
 			#endif
 		}else if (strcmp(command, "tp") == 0){
 			#if !defined(DEBUG_WEIGHT_RANDOM)  && !defined(DEBUG_WEIGHT_MILLIS)
-				Scale.zero(CoreMemory.eeprom.scales_value.zero_man_range);
+				Board->scales()->zero(Board->memory()->_value->scales_value.zero_man_range);
+				//Scale.zero(CoreMemory.eeprom.scales_value.zero_man_range);
 			#endif 
 		}else if (strcmp(command, "scan") == 0) {
 			WiFi.scanNetworksAsync(printScanResult, true);

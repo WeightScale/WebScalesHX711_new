@@ -69,8 +69,8 @@ void SettingsPageClass::handleValue(AsyncWebServerRequest * request) {
 size_t SettingsPageClass::doSettings(JsonObject &root) {
 	JsonObject& scale = root.createNestedObject(SCALE_JSON);
 #ifdef INTERNAL_POWER
-	root["id_pe"] = _eeprom.settings.power_time_enable;
-	root["id_pt"] = _eeprom.settings.time_off;
+	root["id_pe"] = _value->power_time_enable;
+	root["id_pt"] = _value->time_off;
 #endif
 	root["id_host"] = _value->hostName;
 	root["id_nadmin"] = _value->user;

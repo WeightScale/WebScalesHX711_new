@@ -93,6 +93,9 @@ bool BoardClass::doDefault() {
 	_eeprom.net.deltaRSSI = 20;
 	_eeprom.net.enable_scan = true;
 #endif // MULTI_POINTS_CONNECT
+#if BOARD == WEB_TERMINAL2
+	_eeprom.scales_value.power5v = false;
+#endif
 	_eeprom.scales_value.accuracy = 1;
 	_eeprom.scales_value.average = 1;
 	_eeprom.scales_value.filter = 100;

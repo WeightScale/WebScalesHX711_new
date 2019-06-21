@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ImplicitFlagCache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <GCC>C:\Users\Kostya\AppData\Local\Arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc</GCC>
-  <GXX>C:\Users\Kostya\AppData\Local\Arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++</GXX>
+  <GCC>C:\Users\Kostya\AppData\Local\Arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9/bin/xtensa-lx106-elf-gcc</GCC>
+  <GXX>C:\Users\Kostya\AppData\Local\Arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9/bin/xtensa-lx106-elf-g++</GXX>
   <CachedFlags>
     <Entry>
       <Key>
@@ -10,17 +10,17 @@
       </Key>
       <Specs>
         <RawIncludeDirs>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include/c++/4.8.2</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include/c++/4.8.2/xtensa-lx106-elf</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include/c++/4.8.2/backward</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include-fixed</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include/c++/4.8.2</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include/c++/4.8.2/xtensa-lx106-elf</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include/c++/4.8.2/backward</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include-fixed</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include</string>
         </RawIncludeDirs>
         <RawLibraryPaths>
-          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/</string>
-          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/../lib/gcc/</string>
-          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/lib/</string>
+          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/</string>
+          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9/bin/../lib/gcc/</string>
+          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/lib/</string>
         </RawLibraryPaths>
         <ForcedIncludeFiles />
         <PreprocessorMacros>
@@ -858,14 +858,14 @@
       </Key>
       <Specs>
         <RawIncludeDirs>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include-fixed</string>
-          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/include-fixed</string>
+          <string>c:\users\kostya\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\2.5.0-3-20ed2b9\bin\../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/include</string>
         </RawIncludeDirs>
         <RawLibraryPaths>
-          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/</string>
-          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/../lib/gcc/</string>
-          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/1.20.0-26-gb404fb9-2/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/lib/</string>
+          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/</string>
+          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9/bin/../lib/gcc/</string>
+          <string>c:/users/kostya/appdata/local/arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9/bin/../lib/gcc/xtensa-lx106-elf/4.8.2/../../../../xtensa-lx106-elf/lib/</string>
         </RawLibraryPaths>
         <ForcedIncludeFiles />
         <PreprocessorMacros>

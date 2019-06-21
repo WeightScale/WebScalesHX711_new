@@ -1,4 +1,4 @@
-#include "CalibratePage.h"
+ï»¿#include "CalibratePage.h"
 #include "Board.h"
 #include "BrowserServer.h"
 
@@ -32,16 +32,28 @@ void CalibratePageClass::handleRequest(AsyncWebServerRequest *request) {
 			_value->zero_man_range = request->arg(F("zm_range")).toFloat();
 			_value->zero_on_range = request->arg(F("zo_range")).toFloat();
 			_value->zero_auto = request->arg(F("zd_auto")).toInt();
-			//_weight_zero_range = _scales_value->max * _scales_value->zero_range; /* Äèàïàçîí íóëÿ */
+			//_weight_zero_range = _scales_value->max * _scales_value->zero_range; /* Ð”Ð¸Ð°Ð¿Ð°Ð·Ð¾Ð½ Ð½ÑƒÐ»Ñ */
 			if(request->hasArg("z_en_auto"))
 				_value->enable_zero_auto = true;
 			else
-				_value->enable_zero_auto = false;			
+				_value->enable_zero_auto = false;
+			
+#if BOARD == WEB_TERMINAL2
+			if (request->hasArg("p5v"))
+				_value->power5v = true;
+			else
+				_value->power5v = false;
+			digitalWrite(EN_MT, _value->power5v);
+#endif
+
+#if BOARD == WEB_TERMINAL_MINI
 			if (request->hasArg("rate"))
 				_value->rate = true;
 			else
 				_value->rate = false;
 			digitalWrite(RATE, _value->rate);
+#endif
+
 			Board->scales()->mathRound();
 			if (saveValue()) {				
 				goto ok;
@@ -102,7 +114,12 @@ void CalibratePageClass::handleValue(AsyncWebServerRequest * request) {
 }
 
 size_t CalibratePageClass::doCalibrateValue(JsonObject& root) {
+#if BOARD == WEB_TERMINAL_MINI
 	root[RATE_JSON] = _value->rate;
+#endif
+#if BOARD == WEB_TERMINAL2
+	root[POWER_5V] = _value->power5v;
+#endif
 	root[STEP_JSON] = _value->step;
 	root[AVERAGE_JSON] = _value->average;
 	root[WEIGHT_MAX_JSON] = _value->max;
